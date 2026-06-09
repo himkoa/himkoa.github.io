@@ -1,0 +1,607 @@
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fraternidad Test N5</title>
+<style>
+body{font-family:system-ui;margin:0;background:#f4f6f8}
+header{background:#0fdb61;color:#fff;padding:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+header h2{margin:0;font-size:1.1em}
+main{max-width:900px;margin:auto;padding:20px}
+.card{background:#fff;padding:20px;border-radius:12px}
+button{width:100%;padding:12px;margin:6px 0;cursor:pointer;border:1px solid #ccc;border-radius:8px;font-size:1em;background:#fff;transition:background 0.2s}
+button:disabled{cursor:default;opacity:0.85}
+.ok{background:#cfeecf!important;border-color:#4caf50!important}
+.bad{background:#ffd1d1!important;border-color:#e53935!important}
+.top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+progress{width:100%;margin:10px 0}
+#feedback{min-height:28px;margin:8px 0;font-weight:bold;font-size:1.05em;text-align:center}
+#feedback.acierto{color:#2e7d32}
+#feedback.fallo{color:#c62828}
+
+/* Nav buttons */
+.nav-btns{display:flex;gap:10px;margin-top:12px}
+.nav-btns button{flex:1;margin:0}
+.btn-primary{background:#1f4b99!important;color:#fff!important;border-color:##0fdb61!important}
+.btn-primary:hover:not(:disabled){background:#163a7a!important}
+.btn-finish{background:#2e7d32!important;color:#fff!important;border-color:#2e7d32!important;margin-top:10px}
+.btn-finish:hover{background:#1b5e20!important}
+
+/* Mode selection */
+#mode-screen{text-align:center;padding:30px 20px}
+#mode-screen h2{color:#0fdb61;margin-bottom:8px}
+#mode-screen p{color:#555;margin-bottom:30px}
+.mode-buttons{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.mode-btn{flex:1;min-width:200px;max-width:280px;padding:28px 20px;border-radius:16px;border:2px solid #1f4b99;background:#fff;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:10px}
+.mode-btn:hover{background:#1f4b99;color:#fff}
+.mode-btn .icon{font-size:2.5em}
+.mode-btn .title{font-size:1.1em;font-weight:bold}
+.mode-btn .desc{font-size:0.85em;color:#666;line-height:1.4}
+.mode-btn:hover .desc{color:#dde}
+
+/* Mode badge in header */
+#mode-badge{font-size:0.78em;background:rgba(255,255,255,0.2);border-radius:6px;padding:3px 10px;white-space:nowrap}
+#back-btn{font-size:0.78em;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:6px;padding:4px 12px;cursor:pointer;width:auto;margin:0}
+#back-btn:hover{background:rgba(255,255,255,0.3)}
+
+/* Progress indicator bar */
+.answered-bar{display:flex;gap:2px;flex-wrap:wrap;margin:8px 0}
+.answered-dot{width:10px;height:10px;border-radius:50%;background:#ddd;cursor:pointer;transition:background 0.2s;flex-shrink:0}
+.answered-dot.current{outline:2px solid #1f4b99;outline-offset:1px}
+.answered-dot.correct{background:#4caf50}
+.answered-dot.wrong{background:#e53935}
+
+/* Results screen */
+#results-screen{display:none}
+.results-summary{text-align:center;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid #eee}
+.big-score{font-size:3em;font-weight:bold;color:#1f4b99}
+.results-sub{color:#666;font-size:1.1em;margin-top:6px}
+.results-pct{font-size:1.3em;font-weight:bold;margin-top:4px}
+.fail-list{margin-top:16px}
+.fail-list h3{color:#c62828}
+.fail-item{background:#fff5f5;border:1px solid #ffcdd2;border-radius:10px;padding:16px;margin:10px 0}
+.fail-item .fail-q{font-weight:bold;margin-bottom:10px;color:#333}
+.fail-item button{pointer-events:none}
+
+/* Study screen */
+#study-screen{display:none}
+#study-screen>h2{color:#1f4b99;text-align:center;margin-bottom:20px}
+.study-topic{margin-bottom:28px}
+.study-topic-header{color:#1f4b99;border-bottom:2px solid #1f4b99;padding-bottom:6px;margin-bottom:12px;font-size:1em;font-weight:bold}
+.study-item{background:#f9f9f9;border:1px solid #ddd;border-radius:10px;padding:16px;margin:10px 0}
+.study-item .study-q{font-weight:bold;margin-bottom:10px;color:#222}
+.study-item button{pointer-events:none}
+
+#quiz-screen{display:none}
+
+/* Topic selection screen */
+#topic-screen{display:none;padding:10px 0}
+#topic-screen h2{color:#1f4b99;margin-bottom:6px;font-size:1.2em}
+#topic-screen .topic-subtitle{color:#555;margin-bottom:20px;font-size:0.95em}
+.topic-controls{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.topic-controls button{width:auto;padding:7px 16px;font-size:0.88em;margin:0}
+.topic-list{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.topic-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid #ddd;border-radius:10px;cursor:pointer;transition:all 0.2s;background:#fafafa}
+.topic-item:hover{border-color:#1f4b99;background:#f0f4ff}
+.topic-item.selected{border-color:#1f4b99;background:#e8f0fe}
+.topic-item input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:#1f4b99;flex-shrink:0}
+.topic-item-info{flex:1}
+.topic-item-name{font-weight:bold;color:#222;font-size:0.95em}
+.topic-item-count{color:#666;font-size:0.82em;margin-top:2px}
+.topic-item-icon{font-size:1.6em;flex-shrink:0}
+.topic-start-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.topic-start-row button{margin:0}
+#start-topic-btn{flex:2;min-width:180px}
+#start-topic-btn:disabled{opacity:0.5;cursor:default}
+.topic-selection-info{color:#666;font-size:0.88em;text-align:center;margin-top:8px}
+
+.favorite-btn{width:auto;padding:6px 10px;margin:8px 0;background:#fff8e1}
+.favorite{background:#ffd54f!important}
+.search-box,.topic-filter{width:100%;padding:10px;margin:8px 0;border:1px solid #bbb;border-radius:8px}
+.stats-card{background:#eef5ff;padding:12px;border-radius:10px;margin-bottom:15px}
+.answer-toggle{width:auto;padding:6px 12px}
+.hidden-answer{display:none}
+
+</style></head><body>
+<header>
+  <h2>Fraternidad Muprespa - Test N5</h2>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span id="mode-badge" style="display:none"></span>
+    <button id="back-btn" style="display:none" onclick="goBack()">&#8592; Cambiar modo</button>
+  </div>
+</header>
+<main>
+
+  <!-- Mode selection -->
+  <div class="card" id="mode-screen">
+    <h2>Selecciona el modo de práctica</h2>
+    <p>Elige cómo quieres repasar las preguntas del test.</p>
+    <div class="mode-buttons">
+      <button class="mode-btn" onclick="showTopicScreen('random')">
+        <span class="icon">🔀</span>
+        <span class="title">Modo Aleatorio</span>
+        <span class="desc">Las preguntas aparecen en orden aleatorio. Ideal para practicar sin memorizar la secuencia.</span>
+      </button>
+      <button class="mode-btn" onclick="showTopicScreen('linear')">
+        <span class="icon">📋</span>
+        <span class="title">Modo Lineal</span>
+        <span class="desc">Las preguntas siguen el orden original del archivo. Perfecto para estudiar tema a tema.</span>
+      </button>
+      <button class="mode-btn" onclick="startMode('study')">
+        <span class="icon">📚</span>
+        <span class="title">Modo Estudio</span>
+        <span class="desc">Ve todas las preguntas con sus respuestas correctas marcadas, agrupadas por tema.</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Topic selection -->
+  <div class="card" id="topic-screen">
+    <h2 id="topic-screen-title">Selecciona los temas</h2>
+    <p class="topic-subtitle" id="topic-screen-subtitle">Elige uno o más temas para practicar.</p>
+    <div class="topic-controls">
+      <button onclick="selectAllTopics(true)">&#10003; Seleccionar todos</button>
+      <button onclick="selectAllTopics(false)">&#10005; Deseleccionar todos</button>
+    </div>
+    <div class="topic-list" id="topic-list"></div>
+    <div class="topic-start-row">
+      <button onclick="goBack()" style="flex:1">&#8592; Volver</button>
+      <button id="start-topic-btn" class="btn-primary" onclick="startWithSelectedTopics()" disabled>Comenzar &#8594;</button>
+    </div>
+    <p class="topic-selection-info" id="topic-selection-info"></p>
+  </div>
+
+  <!-- Quiz -->
+  <div class="card" id="quiz-screen">
+    <div class="top">
+      <div id="count"></div>
+      <div id="score"></div>
+    </div>
+    <progress id="prog" value="0" max="100"></progress>
+    <div class="answered-bar" id="dots"></div>
+    <h3 id="q"></h3>
+    <div id="opts"></div>
+    <div id="feedback"></div>
+    <div class="nav-btns">
+      <button id="prev-btn" onclick="prev()" disabled>&#8592; Anterior</button>
+      <button id="next-btn" onclick="next()" class="btn-primary">Siguiente &#8594;</button>
+    </div>
+    <button id="finish-btn" onclick="showResults()" class="btn-finish" style="display:none">&#10003; Ver Resultados</button>
+  </div>
+
+  <!-- Results -->
+  <div class="card" id="results-screen">
+    <div class="results-summary">
+      <div class="big-score" id="res-score"></div>
+      <div class="results-sub" id="res-sub"></div>
+      <div class="results-pct" id="res-pct"></div>
+    </div>
+    <div id="res-fails" class="fail-list"></div>
+    <div class="nav-btns" style="margin-top:20px">
+      <button onclick="goBack()">&#8592; Cambiar modo</button>
+      <button onclick="restartQuiz()" class="btn-primary">&#8635; Repetir test</button>
+    </div>
+  </div>
+
+  <!-- Study -->
+  <div class="card" id="study-screen">
+    <h2>Todas las preguntas y respuestas</h2>
+    
+<div class="stats-card">
+  <strong>Estadísticas por tema</strong>
+  <div id="topic-stats"></div>
+</div>
+<input id="study-search" class="search-box" placeholder="Buscar pregunta...">
+<select id="study-topic-filter" class="topic-filter">
+  <option value="">Todos los temas</option>
+</select>
+<div id="study-content"></div>
+
+    <button onclick="goBack()" style="margin-top:20px">&#8592; Volver al menú</button>
+  </div>
+
+</main>
+<script>
+let allQs=[], qs=[], i=0, score=0, mode='';
+let answers=[];
+let pendingMode='';
+let selectedTopics=new Set();
+let topicData=[];
+
+fetch('preguntas620.json').then(r=>r.json()).then(d=>{
+  allQs=d;
+  // Build topic data with counts
+  let map={};
+  d.forEach(q=>{
+    let t=q.tema||'Sin tema';
+    if(!map[t]) map[t]={name:t,count:0};
+    map[t].count++;
+  });
+  topicData=Object.values(map);
+});
+
+function showTopicScreen(m){
+  pendingMode=m;
+  let title=m==='random'?'🔀 Modo Aleatorio — Selecciona los temas':'📋 Modo Lineal — Selecciona los temas';
+  let sub=m==='random'
+    ? 'Elige los temas que quieres practicar. Las preguntas aparecerán en orden aleatorio.'
+    : 'Elige los temas que quieres practicar. Las preguntas seguirán el orden original.';
+  document.getElementById('topic-screen-title').textContent=title;
+  document.getElementById('topic-screen-subtitle').textContent=sub;
+
+  selectedTopics=new Set(topicData.map(t=>t.name)); // all selected by default
+  renderTopicList();
+  switchScreen('topic');
+}
+
+function renderTopicList(){
+  let listEl=document.getElementById('topic-list');
+  listEl.innerHTML='';
+  let icons=['📘','📗','📙','📕','📒','📓'];
+  topicData.forEach((t,idx)=>{
+    let isSelected=selectedTopics.has(t.name);
+    let item=document.createElement('label');
+    item.className='topic-item'+(isSelected?' selected':'');
+    item.innerHTML=`
+      <input type="checkbox" ${isSelected?'checked':''} data-topic="${escHtml(t.name)}">
+      <span class="topic-item-icon">${icons[idx%icons.length]}</span>
+      <span class="topic-item-info">
+        <div class="topic-item-name">${escHtml(t.name)}</div>
+        <div class="topic-item-count">${t.count} preguntas</div>
+      </span>`;
+    let cb=item.querySelector('input');
+    cb.addEventListener('change',()=>{
+      if(cb.checked) selectedTopics.add(t.name);
+      else selectedTopics.delete(t.name);
+      item.classList.toggle('selected', cb.checked);
+      updateTopicStartBtn();
+    });
+    listEl.appendChild(item);
+  });
+  updateTopicStartBtn();
+}
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function selectAllTopics(val){
+  if(val) topicData.forEach(t=>selectedTopics.add(t.name));
+  else selectedTopics.clear();
+  renderTopicList();
+}
+
+function updateTopicStartBtn(){
+  let btn=document.getElementById('start-topic-btn');
+  let total=topicData.filter(t=>selectedTopics.has(t.name)).reduce((s,t)=>s+t.count,0);
+  btn.disabled=selectedTopics.size===0;
+  let info=document.getElementById('topic-selection-info');
+  if(selectedTopics.size===0){
+    info.textContent='Selecciona al menos un tema para continuar.';
+  } else {
+    info.textContent=`${selectedTopics.size} tema(s) seleccionado(s) · ${total} preguntas`;
+  }
+}
+
+function startWithSelectedTopics(){
+  let filtered=allQs.filter(q=>selectedTopics.has(q.tema||'Sin tema'));
+  startMode(pendingMode, filtered);
+}
+
+function startMode(m, filteredQs){
+  mode=m;
+  if(m==='study'){ showStudy(); return; }
+  let pool=filteredQs||allQs;
+  qs = m==='random'
+    ? [...pool].sort(()=>Math.random()-0.5)
+    : [...pool];
+  i=0; score=0;
+  answers=qs.map(()=>({answered:false,correct:false,selectedIdx:-1}));
+  switchScreen('quiz');
+  let badgeBase=m==='random'?'🔀 Aleatorio':'📋 Lineal';
+  let topicLabel=filteredQs && selectedTopics.size<topicData.length
+    ? ` · ${selectedTopics.size} tema(s)`:'';
+  document.getElementById('mode-badge').textContent=badgeBase+topicLabel;
+  show();
+}
+
+function switchScreen(s){
+  ['mode','topic','quiz','results','study'].forEach(n=>{
+    document.getElementById(n+'-screen').style.display = n===s ? 'block' : 'none';
+  });
+  let inMode = s!=='mode';
+  document.getElementById('mode-badge').style.display = inMode ? '' : 'none';
+  document.getElementById('back-btn').style.display  = inMode ? '' : 'none';
+}
+
+function goBack(){
+  switchScreen('mode');
+}
+
+function show(){
+  let p=qs[i]; if(!p)return;
+  document.getElementById('count').innerText=`Pregunta ${i+1} / ${qs.length}`;
+  document.getElementById('score').innerText='Aciertos: '+score;
+  document.getElementById('q').innerText=p.pregunta||('Pregunta '+(i+1));
+
+  let fb=document.getElementById('feedback');
+  fb.textContent=''; fb.className='';
+
+  let optsEl=document.getElementById('opts'); optsEl.innerHTML='';
+  let correctaIdx=(p.respuesta||'').toUpperCase().charCodeAt(0)-65;
+  let ans=answers[i];
+
+  (p.opciones||[]).forEach((o,n)=>{
+    let b=document.createElement('button'); b.textContent=o;
+    if(ans.answered){
+      b.disabled=true;
+      if(n===correctaIdx) b.className='ok';
+      if(n===ans.selectedIdx && n!==correctaIdx) b.className='bad';
+    } else {
+      b.onclick=()=>answer(n, correctaIdx, p.respuesta);
+    }
+    optsEl.appendChild(b);
+  });
+
+  if(ans.answered){
+    if(ans.correct){
+      fb.textContent='¡Correcto! Muy bien.';
+      fb.className='acierto';
+    } else {
+      fb.textContent='Incorrecto. La respuesta correcta es la opción '+(p.respuesta||'');
+      fb.className='fallo';
+    }
+  }
+
+  prog.value=((i+1)/qs.length)*100;
+  document.getElementById('prev-btn').disabled=(i===0);
+  document.getElementById('next-btn').disabled=(i===qs.length-1);
+
+  let anyAnswered=answers.some(a=>a.answered);
+  document.getElementById('finish-btn').style.display=anyAnswered?'':'none';
+
+  renderDots();
+}
+
+function renderDots(){
+  let dotsEl=document.getElementById('dots'); dotsEl.innerHTML='';
+  qs.forEach((_,j)=>{
+    let d=document.createElement('span');
+    d.className='answered-dot';
+    if(j===i) d.classList.add('current');
+    if(answers[j].answered){
+      d.classList.add(answers[j].correct?'correct':'wrong');
+    }
+    d.title=`Pregunta ${j+1}`;
+    d.onclick=()=>{i=j;show();};
+    dotsEl.appendChild(d);
+  });
+}
+
+function answer(selectedIdx, correctaIdx, respuestaLetra){
+  if(answers[i].answered) return;
+  answers[i]={answered:true, correct:selectedIdx===correctaIdx, selectedIdx};
+  if(answers[i].correct) score++;
+
+  let optsEl=document.getElementById('opts');
+  let btns=optsEl.querySelectorAll('button');
+  btns.forEach(b=>b.disabled=true);
+  btns[correctaIdx].className='ok';
+  if(selectedIdx!==correctaIdx) btns[selectedIdx].className='bad';
+
+  let fb=document.getElementById('feedback');
+  document.getElementById('score').innerText='Aciertos: '+score;
+  if(answers[i].correct){
+    fb.textContent='¡Correcto! Muy bien.';
+    fb.className='acierto';
+  } else {
+    fb.textContent='Incorrecto. La respuesta correcta es la opción '+(respuestaLetra||'');
+    fb.className='fallo';
+  }
+
+  document.getElementById('finish-btn').style.display='';
+  renderDots();
+}
+
+function prev(){ if(i>0){i--;show();} }
+function next(){ if(i<qs.length-1){i++;show();} }
+
+function restartQuiz(){ startWithSelectedTopics(); }
+
+function showResults(){
+  let answeredCount=answers.filter(a=>a.answered).length;
+  let pct=answeredCount>0?Math.round(score/answeredCount*100):0;
+
+  switchScreen('results');
+  let badgeBase=mode==='random'?'🔀 Aleatorio':'📋 Lineal';
+  let topicLabel=selectedTopics.size<topicData.length?` · ${selectedTopics.size} tema(s)`:'';
+  document.getElementById('mode-badge').textContent=badgeBase+topicLabel;
+
+  document.getElementById('res-score').textContent=score+' / '+answeredCount;
+  document.getElementById('res-sub').textContent=`Preguntas respondidas: ${answeredCount} de ${qs.length}`;
+  document.getElementById('res-pct').textContent=pct+'% de aciertos';
+
+  let failsEl=document.getElementById('res-fails'); failsEl.innerHTML='';
+  let failed=qs.reduce((acc,q,j)=>answers[j].answered&&!answers[j].correct?[...acc,{q,j}]:acc,[]);
+
+  if(failed.length===0){
+    failsEl.innerHTML='<p style="text-align:center;color:#2e7d32;font-size:1.2em">¡Enhorabuena! No has fallado ninguna pregunta respondida.</p>';
+  } else {
+    let h=document.createElement('h3');
+    h.textContent='Preguntas falladas ('+failed.length+'):';
+    failsEl.appendChild(h);
+
+    failed.forEach(({q,j})=>{
+      let correctaIdx=(q.respuesta||'').toUpperCase().charCodeAt(0)-65;
+      let ans=answers[j];
+
+      let div=document.createElement('div'); div.className='fail-item';
+
+      let qDiv=document.createElement('div'); qDiv.className='fail-q';
+      qDiv.textContent=(j+1)+'. '+q.pregunta;
+      div.appendChild(qDiv);
+
+      (q.opciones||[]).forEach((o,n)=>{
+        let b=document.createElement('button'); b.textContent=o; b.disabled=true;
+        if(n===correctaIdx) b.className='ok';
+        else if(n===ans.selectedIdx) b.className='bad';
+        div.appendChild(b);
+      });
+
+      failsEl.appendChild(div);
+    });
+  }
+}
+
+function showStudy(){
+  switchScreen('study');
+  document.getElementById('mode-badge').textContent='📚 Estudio';
+
+  let content=document.getElementById('study-content'); content.innerHTML='';
+  let byTema={};
+  allQs.forEach(q=>{ let t=q.tema||'Sin tema'; (byTema[t]=byTema[t]||[]).push(q); });
+
+  Object.entries(byTema).forEach(([tema,preguntas])=>{
+    let topicDiv=document.createElement('div'); topicDiv.className='study-topic';
+    let h=document.createElement('div'); h.className='study-topic-header'; h.textContent=tema;
+    topicDiv.appendChild(h);
+
+    preguntas.forEach(q=>{
+      let correctaIdx=(q.respuesta||'').toUpperCase().charCodeAt(0)-65;
+      let item=document.createElement('div'); item.className='study-item';
+
+      let qDiv=document.createElement('div'); qDiv.className='study-q';
+      qDiv.textContent=(q.id?q.id+'. ':'')+q.pregunta;
+      item.appendChild(qDiv);
+
+      (q.opciones||[]).forEach((o,n)=>{
+        let b=document.createElement('button'); b.textContent=o; b.disabled=true;
+        if(n===correctaIdx) b.className='ok';
+        item.appendChild(b);
+      });
+
+      topicDiv.appendChild(item);
+    });
+
+    content.appendChild(topicDiv);
+  });
+}
+
+let favorites = JSON.parse(localStorage.getItem('favorites')||'[]');
+
+function toggleFavorite(id){
+  if(favorites.includes(id)) favorites=favorites.filter(x=>x!==id);
+  else favorites.push(id);
+  localStorage.setItem('favorites',JSON.stringify(favorites));
+  showStudy();
+}
+
+function toggleAnswer(el){
+  const ans=el.parentNode.querySelector('.answer-block');
+  ans.classList.toggle('hidden-answer');
+  el.textContent=ans.classList.contains('hidden-answer')?'Mostrar respuesta':'Ocultar respuesta';
+}
+
+const _oldShowStudy = typeof showStudy==='function' ? showStudy : null;
+
+showStudy=function(){
+  switchScreen('study');
+
+  let filter=document.getElementById('study-topic-filter');
+  let search=document.getElementById('study-search');
+
+  filter.innerHTML='<option value="">Todos los temas</option>';
+  [...new Set(allQs.map(q=>q.tema||'Sin tema'))].forEach(t=>{
+    filter.innerHTML += `<option value="${t}">${t}</option>`;
+  });
+
+  function render(){
+    let txt=(search.value||'').toLowerCase();
+    let topic=filter.value;
+
+    let data=allQs.filter(q=>
+      (!topic || (q.tema||'Sin tema')===topic) &&
+      (!txt || q.pregunta.toLowerCase().includes(txt))
+    );
+
+    let stats={};
+    allQs.forEach(q=>{
+      let t=q.tema||'Sin tema';
+      stats[t]=(stats[t]||0)+1;
+    });
+
+    document.getElementById('topic-stats').innerHTML =
+      Object.entries(stats).map(([k,v])=>`<div>${k}: <b>${v}</b> preguntas</div>`).join('');
+
+    let c=document.getElementById('study-content');
+    c.innerHTML='';
+
+    data.forEach(q=>{
+      let correct=(q.respuesta||'').charCodeAt(0)-65;
+      let fav=favorites.includes(q.id);
+
+      let div=document.createElement('div');
+      div.className='study-item';
+      div.innerHTML=`
+        <div class="study-q">${q.pregunta}</div>
+        <button class="favorite-btn ${fav?'favorite':''}" onclick="toggleFavorite(${q.id})">★ Favorita</button>
+        <button class="answer-toggle" onclick="toggleAnswer(this)">Mostrar respuesta</button>
+        <div class="answer-block hidden-answer">
+          ${(q.opciones||[]).map((o,i)=>`<div ${i===correct?'style="font-weight:bold;color:green"':''}>${String.fromCharCode(65+i)}. ${o}</div>`).join('')}
+        </div>
+      `;
+      c.appendChild(div);
+    });
+  }
+
+  search.oninput=render;
+  filter.onchange=render;
+  render();
+}
+
+</script>
+<!-- PLUS FEATURES -->
+<div id="plus-features" style="display:none"></div>
+<script>
+if(!localStorage.getItem('examHistory')) localStorage.setItem('examHistory','[]');
+
+function saveExamResult(score,total){
+  const hist=JSON.parse(localStorage.getItem('examHistory')||'[]');
+  hist.push({date:new Date().toISOString(),score,total});
+  localStorage.setItem('examHistory',JSON.stringify(hist));
+}
+
+function getWrongQuestions(){
+  return JSON.parse(localStorage.getItem('wrongQuestions')||'[]');
+}
+
+function addWrongQuestion(id){
+  let w=getWrongQuestions();
+  if(!w.includes(id)){ w.push(id); localStorage.setItem('wrongQuestions',JSON.stringify(w)); }
+}
+
+function exportProgress(){
+  const data={
+    favorites:localStorage.getItem('favorites'),
+    wrongQuestions:localStorage.getItem('wrongQuestions'),
+    examHistory:localStorage.getItem('examHistory')
+  };
+  const blob=new Blob([JSON.stringify(data)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='progreso_fraternidad.json';
+  a.click();
+}
+
+function importProgress(input){
+  const file=input.files[0];
+  if(!file) return;
+  const r=new FileReader();
+  r.onload=e=>{
+    const d=JSON.parse(e.target.result);
+    Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
+    alert('Progreso importado correctamente');
+  };
+  r.readAsText(file);
+}
+</script>
+
+</body></html>
