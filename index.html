@@ -123,7 +123,6 @@ border:1px solid rgba(255,255,255,.12);
 box-shadow:0 10px 30px rgba(0,0,0,.25);
 color:white!important;
 }
-h1,h2,h3,p,div,span,label{color:#f8fafc}
 button{
 border:none!important;
 border-radius:14px!important;
@@ -170,6 +169,120 @@ padding:14px;
 border-radius:16px;
 text-align:center;
 color:white;
+}
+</style>
+</style>
+  /* ===== FIX DISEÑO CLARO / OSCURO ===== */
+
+/* quitar el fondo oscuro forzado */
+body{
+  background:#f4f6f8 !important;
+  color:#222;
+}
+
+/* tarjetas principales */
+.card{
+  background:#fff !important;
+  color:#222 !important;
+  border:1px solid #ddd !important;
+}
+
+/* botones de selección con caja */
+.mode-btn{
+  background:#fff !important;
+  border:2px solid #1f4b99 !important;
+  color:#222 !important;
+}
+
+.mode-btn .desc{
+  color:#666 !important;
+}
+
+/* temas */
+.topic-item{
+  background:#fafafa !important;
+  border:2px solid #ddd !important;
+  color:#222 !important;
+}
+
+.topic-item.selected{
+  background:#e8f0fe !important;
+  border-color:#1f4b99 !important;
+}
+
+/* estudio */
+.study-item{
+  background:#f9f9f9 !important;
+  border:1px solid #ddd !important;
+  color:#222 !important;
+}
+
+.study-q{
+  color:#222 !important;
+}
+
+
+/* respuestas SIEMPRE visibles */
+.ok,
+button.ok{
+  background:#cfeecf !important;
+  color:#145214 !important;
+  border-color:#4caf50 !important;
+}
+
+.bad,
+button.bad{
+  background:#ffd1d1 !important;
+  color:#8b0000 !important;
+  border-color:#e53935 !important;
+}
+
+
+/* ocultar respuestas en estudio */
+.hidden-answer{
+  display:none;
+}
+
+.answer-block:not(.hidden-answer){
+  display:block;
+}
+
+
+/* modo oscuro real */
+.dark-mode{
+  background:#121212 !important;
+  color:#eee !important;
+}
+
+.dark-mode .card{
+  background:#1e1e1e !important;
+  color:#eee !important;
+}
+
+.dark-mode .mode-btn,
+.dark-mode .topic-item,
+.dark-mode .study-item{
+  background:#242424 !important;
+  color:#eee !important;
+  border-color:#555 !important;
+}
+
+.dark-mode .mode-btn .desc,
+.dark-mode .topic-item-count,
+.dark-mode .study-q{
+  color:#ddd !important;
+}
+
+
+/* mantener aciertos/fallos en oscuro */
+.dark-mode .ok{
+  background:#14532d !important;
+  color:#dcfce7 !important;
+}
+
+.dark-mode .bad{
+  background:#7f1d1d !important;
+  color:#fee2e2 !important;
 }
 </style>
 </head><body>
