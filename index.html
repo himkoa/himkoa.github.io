@@ -386,6 +386,10 @@ header h2,
 <button onclick="startWrongQuestions()">
 ❌ Practicar errores
 </button>
+  
+<button onclick="document.body.classList.toggle('dark-mode')">
+🌙 Modo oscuro
+</button>
 
 </div>
     
@@ -890,7 +894,8 @@ function importProgress(input){
 (function(){
  const btn=document.createElement('button');
  btn.textContent='🌙 Modo oscuro';
- btn.style.position='fixed';
+ btn.style.position='static';
+ btn.style.width='auto';
  btn.style.right='10px';
  btn.style.bottom='10px';
  btn.style.width='auto';
