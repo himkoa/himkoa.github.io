@@ -105,7 +105,74 @@ progress{width:100%;margin:10px 0}
 .dark-mode .card{background:#1e1e1e!important;color:#eee!important}
 .dark-mode button{background:#2a2a2a!important;color:#eee!important;border-color:#555!important}
 
-</style></head><body>
+</style>
+<style id="v3-modern">
+body{
+background:linear-gradient(135deg,#0f172a,#1e293b)!important;
+min-height:100vh;
+}
+header{
+background:rgba(255,255,255,.08)!important;
+backdrop-filter:blur(12px);
+border-bottom:1px solid rgba(255,255,255,.1);
+}
+.card{
+background:rgba(255,255,255,.08)!important;
+backdrop-filter:blur(16px);
+border:1px solid rgba(255,255,255,.12);
+box-shadow:0 10px 30px rgba(0,0,0,.25);
+color:white!important;
+}
+h1,h2,h3,p,div,span,label{color:#f8fafc}
+button{
+border:none!important;
+border-radius:14px!important;
+transition:all .25s ease!important;
+}
+button:hover{
+transform:translateY(-2px) scale(1.02);
+}
+.btn-primary{
+background:linear-gradient(135deg,#3b82f6,#2563eb)!important;
+}
+.btn-finish{
+background:linear-gradient(135deg,#22c55e,#16a34a)!important;
+}
+progress{
+height:14px;
+border-radius:20px;
+overflow:hidden;
+}
+.mode-btn{
+background:rgba(255,255,255,.08)!important;
+backdrop-filter:blur(12px);
+}
+.mode-btn:hover{
+transform:translateY(-4px);
+}
+.big-score{
+font-size:4rem!important;
+background:linear-gradient(135deg,#60a5fa,#22c55e);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+#dashboard-v3{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+margin-bottom:18px;
+}
+.stat-box{
+flex:1;
+min-width:160px;
+background:rgba(255,255,255,.08);
+padding:14px;
+border-radius:16px;
+text-align:center;
+color:white;
+}
+</style>
+</head><body>
 <header>
   <h2>Fraternidad Muprespa - Test N5</h2>
   <div style="display:flex;align-items:center;gap:8px">
@@ -119,7 +186,14 @@ progress{width:100%;margin:10px 0}
   <div class="card" id="mode-screen">
     <h2>Selecciona el modo de práctica</h2>
     <p>Elige cómo quieres repasar las preguntas del test.</p>
-    <div class="mode-buttons">
+    
+<div id="dashboard-v3">
+<div class="stat-box">🏆<br><b>Exámenes</b><div id="v3-exams">0</div></div>
+<div class="stat-box">⭐<br><b>Favoritas</b><div id="v3-favs">0</div></div>
+<div class="stat-box">❌<br><b>Errores</b><div id="v3-wrong">0</div></div>
+<div class="stat-box">📈<br><b>Media</b><div id="v3-avg">0%</div></div>
+</div>
+<div class="mode-buttons">
       <button class="mode-btn" onclick="showTopicScreen('random')">
         <span class="icon">🔀</span>
         <span class="title">Modo Aleatorio</span>
@@ -706,5 +780,28 @@ showResults=function(){
  }
  _showResultsOriginal();
 }
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+ try{
+   const hist=JSON.parse(localStorage.getItem('examHistory')||'[]');
+   const fav=JSON.parse(localStorage.getItem('favorites')||'[]');
+   const wrong=JSON.parse(localStorage.getItem('wrongQuestions')||'[]');
+
+   let avg=0;
+   if(hist.length){
+      avg=Math.round(hist.reduce((a,b)=>a+(b.score/b.total*100),0)/hist.length);
+   }
+
+   const e=document.getElementById('v3-exams');
+   if(e){
+      e.textContent=hist.length;
+      document.getElementById('v3-favs').textContent=fav.length;
+      document.getElementById('v3-wrong').textContent=wrong.length;
+      document.getElementById('v3-avg').textContent=avg+'%';
+   }
+ }catch(err){}
+});
 </script>
 </body></html>
