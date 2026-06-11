@@ -421,13 +421,42 @@ header h2{
   color:#eee!important;
 }
 </style>
+  <style>
+  #dark-btn{
+ width:auto!important;
+ margin:0!important;
+ padding:6px 12px!important;
+ background:rgba(255,255,255,.25)!important;
+ color:white!important;
+ border:1px solid rgba(255,255,255,.5)!important;
+}
+
+#dark-btn:hover{
+ transform:none!important;
+}
+
+.dark-mode #dark-btn{
+ background:#333!important;
+ color:#fff!important;
+}
+  </style>
   
 </head><body>
 <header>
   <h2>Fraternidad Muprespa - Test N5</h2>
+
   <div style="display:flex;align-items:center;gap:8px">
+
+    <button id="dark-btn" onclick="toggleDark()">
+      🌙
+    </button>
+
     <span id="mode-badge" style="display:none"></span>
-    <button id="back-btn" style="display:none" onclick="goBack()">&#8592; Cambiar modo</button>
+
+    <button id="back-btn" style="display:none" onclick="goBack()">
+      &#8592; Cambiar modo
+    </button>
+
   </div>
 </header>
 <main>
@@ -961,16 +990,21 @@ function importProgress(input){
 <script>
 // Modo oscuro
 (function(){
- const btn=document.createElement('button');
- btn.textContent='🌙 Modo oscuro';
- btn.style.position='static';
- btn.style.width='auto';
- btn.onclick=()=>document.body.classList.toggle('dark-mode');
+window.toggleDark = function(){
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem(
+        'darkMode',
+        document.body.classList.contains('dark-mode')
+    );
+};
+document.addEventListener('DOMContentLoaded',()=>{
+    if(localStorage.getItem('darkMode') === 'true'){
+        document.body.classList.add('dark-mode');
+    }
+});
 
- document.addEventListener('DOMContentLoaded',()=>{
-    document.querySelector('.extra-buttons').appendChild(btn);
- });
 })();
+</script>
 
 // Practicar errores
 function startWrongQuestions(){
