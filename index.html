@@ -346,92 +346,15 @@ header h2,
  flex:1;
  min-width:180px;
 }
+
 </style>
-<style>
-    /* ===== FIX HEADER Y ZONA SUPERIOR ===== */
-
-header{
-  background:#0fdb61!important;
-  color:white!important;
-  backdrop-filter:none!important;
-  border-bottom:none!important;
-}
-
-header h2{
-  color:white!important;
-}
-
-#mode-badge{
-  background:rgba(255,255,255,.25)!important;
-  color:white!important;
-}
-
-#back-btn{
-  background:rgba(255,255,255,.25)!important;
-  color:white!important;
-  border-color:white!important;
-}
-
-
-/* tarjetas superiores */
-#mode-screen{
-  color:#222!important;
-}
-
-#mode-screen h2{
-  color:#0fdb61!important;
-}
-
-#mode-screen p{
-  color:#555!important;
-}
-
-
-/* botones del menú */
-.mode-btn{
-  background:white!important;
-  color:#222!important;
-}
-
-.mode-btn .title{
-  color:#222!important;
-}
-
-.mode-btn .desc{
-  color:#666!important;
-}
-
-
-/* oscuro */
-.dark-mode header{
-  background:#0b7a3d!important;
-}
-
-.dark-mode #mode-screen h2{
-  color:#4ade80!important;
-}
-
-.dark-mode .mode-btn{
-  background:#242424!important;
-  color:#eee!important;
-}
-
-.dark-mode .mode-btn .title,
-.dark-mode .mode-btn .desc{
-  color:#eee!important;
-}
-</style>
-  
 </head><body>
 <header>
   <h2>Fraternidad Muprespa - Test N5</h2>
   <div style="display:flex;align-items:center;gap:8px">
     <span id="mode-badge" style="display:none"></span>
+    <button id="back-btn" style="display:none" onclick="goBack()">&#8592; Cambiar modo</button>
   </div>
-  <button onclick="document.body.classList.toggle('dark-mode')">
-🌙 Modo oscuro
-</button>
-  
 </header>
 <main>
 
@@ -462,6 +385,10 @@ header h2{
 
 <button onclick="startWrongQuestions()">
 ❌ Practicar errores
+</button>
+  
+<button onclick="document.body.classList.toggle('dark-mode')">
+🌙 Modo oscuro
 </button>
 
 </div>
@@ -957,6 +884,11 @@ function importProgress(input){
 }
 </script>
 
+
+<div style="position:fixed;left:10px;bottom:10px;z-index:9999">
+<button onclick="startWrongQuestions()" style="width:auto">❌ Practicar errores</button>
+</div>
+
 <script>
 // Modo oscuro
 (function(){
@@ -964,11 +896,12 @@ function importProgress(input){
  btn.textContent='🌙 Modo oscuro';
  btn.style.position='static';
  btn.style.width='auto';
+ btn.style.right='10px';
+ btn.style.bottom='10px';
+ btn.style.width='auto';
+ btn.style.zIndex='9999';
  btn.onclick=()=>document.body.classList.toggle('dark-mode');
-
- document.addEventListener('DOMContentLoaded',()=>{
-    document.querySelector('.extra-buttons').appendChild(btn);
- });
+ document.addEventListener('DOMContentLoaded',()=>document.body.appendChild(btn));
 })();
 
 // Practicar errores
