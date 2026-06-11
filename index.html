@@ -100,6 +100,11 @@ progress{width:100%;margin:10px 0}
 .answer-toggle{width:auto;padding:6px 12px}
 .hidden-answer{display:auto}
 
+
+.dark-mode{background:#121212!important;color:#eee!important}
+.dark-mode .card{background:#1e1e1e!important;color:#eee!important}
+.dark-mode button{background:#2a2a2a!important;color:#eee!important;border-color:#555!important}
+
 </style></head><body>
 <header>
   <h2>Fraternidad Muprespa - Test N5</h2>
@@ -559,7 +564,17 @@ showStudy=function(){
 
 </script>
 <!-- PLUS FEATURES -->
-<div id="plus-features" style="display:none"></div>
+
+<div id="plus-features">
+<!-- Panel 2.0 -->
+<div style="position:fixed;top:80px;right:10px;background:white;padding:10px;border-radius:10px;border:1px solid #ccc;z-index:9999;max-width:220px">
+<b>🚀 Fraternidad 2.0</b><br><br>
+<button onclick="showStats()">📊 Estadísticas</button>
+<button onclick="startMiniExam()">🏆 Examen 20 preguntas</button>
+<button onclick="practiceFavorites()">⭐ Favoritas</button>
+</div>
+</div>
+
 <script>
 if(!localStorage.getItem('examHistory')) localStorage.setItem('examHistory','[]');
 
@@ -604,4 +619,92 @@ function importProgress(input){
 }
 </script>
 
+
+<div style="position:fixed;left:10px;bottom:10px;z-index:9999">
+<button onclick="startWrongQuestions()" style="width:auto">❌ Practicar errores</button>
+</div>
+
+<script>
+// Modo oscuro
+(function(){
+ const btn=document.createElement('button');
+ btn.textContent='🌙 Modo oscuro';
+ btn.style.position='fixed';
+ btn.style.right='10px';
+ btn.style.bottom='10px';
+ btn.style.width='auto';
+ btn.style.zIndex='9999';
+ btn.onclick=()=>document.body.classList.toggle('dark-mode');
+ document.addEventListener('DOMContentLoaded',()=>document.body.appendChild(btn));
+})();
+
+// Practicar errores
+function startWrongQuestions(){
+ const wrong=JSON.parse(localStorage.getItem('wrongQuestions')||'[]');
+ if(!wrong.length){ alert('No hay preguntas falladas guardadas'); return; }
+ const filtered=allQs.filter(q=>wrong.includes(q.id));
+ startMode('random',filtered);
+}
+</script>
+
+<script>
+function showStats(){
+ const hist=JSON.parse(localStorage.getItem('examHistory')||'[]');
+ const fav=JSON.parse(localStorage.getItem('favorites')||'[]');
+ const wrong=JSON.parse(localStorage.getItem('wrongQuestions')||'[]');
+
+ let avg=0;
+ if(hist.length){
+   avg=Math.round(hist.reduce((a,b)=>a+(b.score/b.total*100),0)/hist.length);
+ }
+
+ alert(
+ '📊 ESTADÍSTICAS\n\n'+
+ 'Exámenes realizados: '+hist.length+'\n'+
+ 'Media: '+avg+'%\n'+
+ 'Favoritas: '+fav.length+'\n'+
+ 'Preguntas falladas guardadas: '+wrong.length
+ );
+}
+
+function startMiniExam(){
+ const pool=[...allQs].sort(()=>Math.random()-0.5).slice(0,20);
+ startMode('random',pool);
+}
+
+function practiceFavorites(){
+ const fav=JSON.parse(localStorage.getItem('favorites')||'[]');
+ const data=allQs.filter(q=>fav.includes(q.id));
+ if(!data.length){
+   alert('No tienes preguntas favoritas');
+   return;
+ }
+ startMode('random',data);
+}
+
+// guardar errores automáticamente
+const _answerOriginal=answer;
+answer=function(selectedIdx,correctaIdx,respuestaLetra){
+ const qActual=qs[i];
+ _answerOriginal(selectedIdx,correctaIdx,respuestaLetra);
+
+ if(selectedIdx!==correctaIdx && qActual && qActual.id){
+   let wrong=JSON.parse(localStorage.getItem('wrongQuestions')||'[]');
+   if(!wrong.includes(qActual.id)){
+      wrong.push(qActual.id);
+      localStorage.setItem('wrongQuestions',JSON.stringify(wrong));
+   }
+ }
+}
+
+// guardar resultados automáticamente
+const _showResultsOriginal=showResults;
+showResults=function(){
+ const answeredCount=answers.filter(a=>a.answered).length;
+ if(answeredCount){
+   saveExamResult(score,answeredCount);
+ }
+ _showResultsOriginal();
+}
+</script>
 </body></html>
