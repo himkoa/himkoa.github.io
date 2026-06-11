@@ -168,7 +168,6 @@ background:rgba(255,255,255,.08);
 padding:14px;
 border-radius:16px;
 text-align:center;
-color:white;
 }
 </style>
 <style>
@@ -285,6 +284,70 @@ button.bad{
   color:#fee2e2 !important;
 }
 </style>
+  <style>
+
+/* ===== AJUSTE FINAL COLORES ===== */
+
+.stat-box,
+.stats-card{
+ color:#222!important;
+}
+
+.stat-box b,
+.stat-box div,
+.stats-card strong,
+#topic-stats,
+#topic-stats div{
+ color:#222!important;
+}
+
+
+header,
+header h2,
+#mode-badge,
+#back-btn{
+ color:white!important;
+}
+
+
+/* estudio */
+.study-item,
+.study-q{
+ color:#222!important;
+}
+
+
+/* oscuro */
+.dark-mode .stat-box,
+.dark-mode .stats-card{
+ background:#242424!important;
+ color:#eee!important;
+}
+
+.dark-mode .stat-box b,
+.dark-mode .stat-box div,
+.dark-mode .stats-card strong,
+.dark-mode #topic-stats,
+.dark-mode #topic-stats div,
+.dark-mode .study-q{
+ color:#eee!important;
+}
+
+
+/* botones extra */
+.extra-buttons{
+ display:flex;
+ gap:10px;
+ flex-wrap:wrap;
+ margin-top:20px;
+}
+
+.extra-buttons button{
+ flex:1;
+ min-width:180px;
+}
+
+</style>
 </head><body>
 <header>
   <h2>Fraternidad Muprespa - Test N5</h2>
@@ -306,6 +369,26 @@ button.bad{
 <div class="stat-box">❌<br><b>Errores</b><div id="v3-wrong">0</div></div>
 <div class="stat-box">📈<br><b>Media</b><div id="v3-avg">0%</div></div>
 </div>
+<div class="extra-buttons">
+
+<button onclick="showStats()">
+📊 Estadísticas
+</button>
+
+<button onclick="startMiniExam()">
+🏆 Examen 20 preguntas
+</button>
+
+<button onclick="practiceFavorites()">
+⭐ Favoritas
+</button>
+
+<button onclick="startWrongQuestions()">
+❌ Practicar errores
+</button>
+
+</div>
+    
 <div class="mode-buttons">
       <button class="mode-btn" onclick="showTopicScreen('random')">
         <span class="icon">🔀</span>
@@ -750,16 +833,7 @@ showStudy=function(){
 }
 
 </script>
-<!-- PLUS FEATURES -->
 
-<div id="plus-features">
-<!-- Panel 2.0 -->
-<div style="position:fixed;top:80px;right:10px;background:white;padding:10px;border-radius:10px;border:1px solid #ccc;z-index:9999;max-width:220px">
-<b>🚀 Fraternidad 2.0</b><br><br>
-<button onclick="showStats()">📊 Estadísticas</button>
-<button onclick="startMiniExam()">🏆 Examen 20 preguntas</button>
-<button onclick="practiceFavorites()">⭐ Favoritas</button>
-</div>
 </div>
 
 <script>
