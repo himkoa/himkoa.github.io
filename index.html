@@ -465,7 +465,17 @@ header h2{
 </div>
 
 <header>
-  <h2>Fraternidad Muprespa - Test N5</h2>
+<h2 id="titulo-app">Fraternidad Test</h2>
+  <select id="temario-select" style="
+padding:6px 10px;
+border-radius:8px;
+border:none;
+font-weight:bold;
+cursor:pointer;
+">
+  <option value="N5">📘 Temario N5</option>
+  <option value="N4">📗 Temario N4</option>
+</select>
 
   <div style="display:flex;align-items:center;gap:8px">
 
@@ -627,6 +637,31 @@ fetch(archivoTemario).then(r=>r.json()).then(d=>{
   });
   topicData=Object.values(map);
 });
+  // ===============================
+// SELECTOR DE TEMARIO
+// ===============================
+
+const selectorTemario =
+    document.getElementById("temario-select");
+
+if(selectorTemario){
+
+    selectorTemario.value =
+        localStorage.getItem("temarioSeleccionado") || "N5";
+
+    selectorTemario.addEventListener("change", () => {
+
+        localStorage.setItem(
+            "temarioSeleccionado",
+            selectorTemario.value
+        );
+
+        location.reload();
+
+    });
+
+}
+  
 
 function showTopicScreen(m){
   pendingMode=m;
@@ -1139,6 +1174,41 @@ window.addEventListener('load',()=>{
    if(el) el.style.display='none';
  }
 });
+</script>
+<script>
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const selector = document.getElementById("temario-select");
+
+    if(!selector) return;
+
+    // Mostrar el temario actual
+    selector.value =
+        localStorage.getItem("temarioSeleccionado") || "N5";
+
+    // Cuando cambie
+    selector.addEventListener("change", () => {
+
+        localStorage.setItem(
+            "temarioSeleccionado",
+            selector.value
+        );
+
+        location.reload();
+    });
+
+});
+
+</script>
+<script>
+    const titulo = document.getElementById("titulo-app");
+
+if(titulo){
+    titulo.textContent =
+        "Fraternidad Test " +
+        (localStorage.getItem("temarioSeleccionado") || "N5");
+}
 </script>
 
 </body></html>
