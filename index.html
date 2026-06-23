@@ -983,7 +983,7 @@ showStudy=function(){
         <div class="study-q">${q.pregunta}</div>
         <button class="favorite-btn ${fav?'favorite':''}" onclick="toggleFavorite(${q.id})">★ Favorita</button>
         <button class="answer-toggle" onclick="toggleAnswer(this)">Mostrar respuesta</button>
-        <div class="answer-block hidden-answer">
+        <div class="answer-block">
           ${(q.opciones||[]).map((o,i)=>`<div ${i===correct?'style="font-weight:bold;color:green"':''}>${String.fromCharCode(65+i)}. ${o}</div>`).join('')}
         </div>
       `;
