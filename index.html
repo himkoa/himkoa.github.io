@@ -454,6 +454,16 @@ header h2{
   </style>
   
 </head><body>
+
+<div id="temarioSelector" style="position:fixed;inset:0;background:#111a;z-index:99999;display:flex;align-items:center;justify-content:center;">
+  <div style="background:white;padding:30px;border-radius:16px;max-width:500px;width:90%;text-align:center">
+    <h2>Selecciona el temario</h2>
+    <p>Elige el nivel que quieres estudiar</p>
+    <button onclick="seleccionarTemario('N5')" style="margin:10px;padding:15px">📘 Temario N5</button>
+    <button onclick="seleccionarTemario('N4')" style="margin:10px;padding:15px">📗 Temario N4</button>
+  </div>
+</div>
+
 <header>
   <h2>Fraternidad Muprespa - Test N5</h2>
 
@@ -600,7 +610,13 @@ let pendingMode='';
 let selectedTopics=new Set();
 let topicData=[];
 
-fetch('preguntas620.json').then(r=>r.json()).then(d=>{
+
+const archivoTemario = localStorage.getItem('temarioSeleccionado') === 'N4'
+ ? 'preguntasN4.json'
+ : 'preguntas620.json';
+
+fetch(archivoTemario).then(r=>r.json()).then(d=>{
+
   allQs=d;
   // Build topic data with counts
   let map={};
@@ -1109,4 +1125,20 @@ document.addEventListener('DOMContentLoaded',()=>{
  }catch(err){}
 });
 </script>
+
+<script>
+function seleccionarTemario(nivel){
+ localStorage.setItem('temarioSeleccionado', nivel);
+ document.getElementById('temarioSelector').style.display='none';
+ location.reload();
+}
+window.addEventListener('load',()=>{
+ const t = localStorage.getItem('temarioSeleccionado');
+ if(t){
+   const el=document.getElementById('temarioSelector');
+   if(el) el.style.display='none';
+ }
+});
+</script>
+
 </body></html>
